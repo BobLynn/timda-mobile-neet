@@ -1,0 +1,92 @@
+TebLocalPlannerROS:
+
+#  odom_topic: odom
+#  map_frame: /odom
+    
+ # Trajectory
+  
+ teb_autosize: True                                                                           #優化期間允許改變軌蹟的時域長度
+ dt_ref: 0.3                                                                                  #局部路徑規劃的解析度
+ dt_hysteresis: 0.1                                                                           #允許改變的時域解析度的浮動範圍， 一般為dt_ref 的10% 左右
+ global_plan_overwrite_orientation: True                                                      #覆蓋全局路徑中局部路徑點的朝向，有些全局規劃者在開始和全局目標之間沒有考慮局部子目標的方向，因此自動確定
+ max_global_plan_lookahead_dist: 1.0                                                          #考慮優化的全局計劃子集的最大長度（累積歐幾里得距離）（如果為0或負數：禁用；長度也受本地Costmap大小的限制）
+ feasibility_check_no_poses: 5                                                                #檢測位姿可到達的時間間隔
+ allow_init_with_backwards_motion: True                                                       #加入這行指令，可以讓移動平台在背對目標路徑的狀態下移動到目的地
+    
+ # Robot
+         
+ max_vel_x: 0.06                                                                              #最大x前向速度
+ max_vel_x_backwards: 0.2    #0.008                                                           #最大x後退速度
+ max_vel_y: 0.04                                                                              #最大y方向速度，機器人的最大起步速度（對於非完整機器人，應為零！）
+#  max_vel_y_backwards: 1.0                                                                   #最大y後退速度
+ max_vel_theta: 0.08                                                                          #最大轉向角速度
+ acc_lim_x: 1.0                                                                               #最大x加速度
+ acc_lim_y: 1.0                                                                               #最大y向加速度，機器人的最大加速度
+ acc_lim_theta: 1.0                                                                           #最大角速度
+ min_turning_radius: 0.0                                                                      #車類機器人的最小轉彎半徑，小型機器人的最小轉彎半徑（差速驅動機器人：零）
+ footprint_model: # types: "point", "circular", "two_circles", "line", "polygon"              #路徑模型形狀
+   type: "polygon"
+  #  radius: 0.2 # for type "circular"
+  #  line_start: [-0.3, 0.0] # for type "line"
+  #  line_end: [0.3, 0.0] # for type "line"
+  #  front_offset: 0.2 # for type "two_circles"
+  #  front_radius: 0.2 # for type "two_circles"
+  #  rear_offset: 0.2 # for type "two_circles"
+  #  rear_radius: 0.2 # for type "two_circles"
+   vertices: [[0.3745, 0.1715], [0.4395, 0.287], [0.3915, 0.333], [0.27634, 0.271], [-0.3745, 0.271],
+              [-0.3745, -0.1715], [-0.4395, -0.287], [-0.3915, -0.333], [-0.27634, -0.271], [0.3745, -0.271]]# for type "polygon"
+
+ # GoalTolerance
+    
+ xy_goal_tolerance: 0.1
+ yaw_goal_tolerance: 0.05
+ free_goal_vel: False # Remove the goal velocity constraint such that the robot can arrive at the goal with maximum speed
+    
+ # Obstacles
+    
+ min_obstacle_dist: 0.03   #0.1 
+ inflation_dist: 0.1
+ include_costmap_obstacles: True
+ costmap_obstacles_behind_robot_dist: 1.0
+ obstacle_poses_affected: 8
+ costmap_converter_plugin: ""
+ costmap_converter_spin_thread: True
+ costmap_converter_rate: 5
+ include_dynamic_obstacles: True
+
+ # Optimization
+
+ no_inner_iterations: 5
+ no_outer_iterations: 4
+ optimization_activate: True
+ optimization_verbose: False
+ penalty_epsilon: 0.1
+ weight_max_vel_x: 2
+ weight_max_vel_y: 2
+ weight_max_vel_theta: 2
+ weight_acc_lim_x: 1
+ weight_acc_lim_y: 1
+ weight_acc_lim_theta: 1
+ weight_kinematics_nh: 0.001 # WE HAVE A HOLONOMIC ROBOT, JUST ADD A SMALL PENALTY
+ weight_kinematics_forward_drive: 500
+ weight_kinematics_turning_radius: 0.0
+ weight_optimaltime: 1
+ weight_obstacle: 15
+ weight_inflation: 0.1
+ weight_dynamic_obstacle: 10 # not in use yet
+ weight_dynamic_obstacle_inflation: 0.1
+ alternative_time_cost: False # not in use yet
+
+ # Homotopy Class Planner
+
+ enable_homotopy_class_planning: True
+ enable_multithreading: True
+ simple_exploration: False
+ max_number_classes: 4
+ roadmap_graph_no_samples: 15
+ roadmap_graph_area_width: 5
+ h_signature_prescaler: 0.5
+ h_signature_threshold: 0.1
+ obstacle_keypoint_offset: 0.1
+ obstacle_heading_threshold: 0.25
+ visualize_hc_graph: False
